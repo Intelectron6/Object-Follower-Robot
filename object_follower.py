@@ -1,11 +1,12 @@
- from picamera.array import PiRGBArray     
+from picamera.array import PiRGBArray     
 from picamera import PiCamera
 from gpiozero import Servo
 from gpiozero import Motor
 import time
 import cv2
 import numpy as np
-    
+
+#function to filter the video feed for only the required color using HSV values
 def segment_colour(frame):
     hsv_roi =  cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv_roi, np.array([160, 160,10]), np.array([190,255,255]))
@@ -16,6 +17,7 @@ def segment_colour(frame):
     cv2.imshow('mask',mask)
     return mask
 
+# function to find the contour of the object of the chosen and enclose it in a circle
 def find_blob(blob):
     largest_contour=0
     cont_index=0
@@ -35,6 +37,7 @@ def target_hist(frame):
     hist=cv2.calcHist([hsv_img],[0],None,[50],[0,255])
     return hist
 
+# picamera settings (change according to convinience)
 camera = PiCamera()
 camera.rotation = 270
 camera.brightness = 51
@@ -48,6 +51,9 @@ last = 0
 
 time.sleep(0.01)
 
+# take continuous video feed from camera, track the object and follow it 
+# using the co-ordinates of the centre of circle and radius
+# proportional control is used to control the speed of the motors
 for image in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):     
       frame = image.array
       global centre_x
