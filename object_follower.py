@@ -17,7 +17,7 @@ def segment_colour(frame):
     cv2.imshow('mask',mask)
     return mask
 
-# function to find the contour of the object of the chosen and enclose it in a circle
+# function to find the contour of the object of the chosen and enclose it in a rectangle
 def find_blob(blob):
     largest_contour=0
     cont_index=0
@@ -52,7 +52,7 @@ last = 0
 time.sleep(0.01)
 
 # take continuous video feed from camera, track the object and follow it 
-# using the co-ordinates of the centre of circle and radius
+# using the co-ordinates of the centre of rectangle and it's area (to measure how far/close it is)
 # proportional control is used to control the speed of the motors
 for image in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):     
       frame = image.array
